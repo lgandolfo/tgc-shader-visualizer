@@ -74,17 +74,45 @@ VS_OUTPUT vsDefault(VS_INPUT input)
 	return output;
 }
 
+float dibujarSeno(float2 position)
+{
+	
+	float grosor = 0.01;
+	float altura = 3;
+	float amplitud = 4;
+	float desplazamiento = -0.5;
+
+	float s = desplazamiento + sin(position.x * amplitud) / altura;
+
+	return abs(step(s,position.y - grosor/2) - step(s,position.y + grosor/2));
+
+}
+
+float dibujarCuadricula(float2 position)
+{
+	
+	float vertical = 0.5;
+	float horizontal = -0.5;
+
+	return abs(step(horizontal,position.y) - step(vertical,position.x));
+}
+
+
 //Pixel Shader
 float4 psDefault(VS_OUTPUT input) : COLOR0
 {
 	float2 position = input.MeshPosition;
-    
-    return float4(position.xy, 0, 1);
+
+	float color;
+
+	color = abs(dibujarSeno(position) - dibujarCuadricula(position));
+	
+    return float4(color, color, color, color);
 }
 
 
 
-technique Default
+technique Default 
 {
 	pass Pass_0
 	{
